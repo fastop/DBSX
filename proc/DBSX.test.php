@@ -54,5 +54,8 @@
         echo "NO EXISTE, BUUUU";
 
 
+        $DBS->compareTables("estimates","estimates_clean");
+
+
 
 ?>

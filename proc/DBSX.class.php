@@ -142,19 +142,26 @@
 
             foreach($ALPHA_TABLE as $atable){
 
+                $ALPHA_RES .= "<tr><td>".$atable["Tables_in_".$ALPHA]."</td>";
+
+
                     if($this->searchTableOnDB($BETA, $atable["Tables_in_".$ALPHA]))
                     { //SI existe... Revisamos el dato ... 
 
-                        $ALPHA_RES .= "<tr><td>Tabla 1 sasd asd asd</td><td>🟢</td><td>🟢</td><td>45</td></tr>";
-                        
+                        $ALPHA_RES .= "<td>🟢</td>";
+                        $ALPHA_RES .= "<td>🟢</td><td>45</td></tr>";
+                        $ALPHA_RES .= "<td>45</td>";
+
                     }
                     else
                     {
-                        $ALPHA_RES .=  "<tr><td>Tabla 1 sasd asd asd</td><td>🟢</td><td>🟢</td><td>45</td></tr>";
+                        // $ALPHA_RES .=  "<tr><td>Tabla 1 sasd asd asd</td><td>🟢</td><td>🟢</td><td>45</td></tr>";
                     }
 
-                 
+             $ALPHA_RES .= "</tr>";
             }
+
+            echo $ALPHA_RES;
 
         }
 
