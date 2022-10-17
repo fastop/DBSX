@@ -143,22 +143,34 @@
             foreach($ALPHA_TABLE as $atable){
 
                 $ALPHA_RES .= "<tr><td>".$atable["Tables_in_".$ALPHA]."</td>";
+                $T1X = $atable["Tables_in_".$ALPHA];
 
 
-                    if($this->searchTableOnDB($BETA, $atable["Tables_in_".$ALPHA]))
+                    if($this->searchTableOnDB($BETA, $T1X))
                     { //SI existe... Revisamos el dato ... 
+                                                
+
 
                         $ALPHA_RES .= "<td>🟢</td>";
-                        $ALPHA_RES .= "<td>🟢</td><td>45</td></tr>";
-                        $ALPHA_RES .= "<td>45</td>";
+
+
+                        //Comparemos la cantidad de elementos per row
+                        $CC = $this->compareRows($ALPHA, $BETA, $T1X); 
+                        $ALPHA_RES .= "<td>🟢</td><td>".$CC."</td></tr>";
 
                     }
-                    else
+                    else //SI no existe
                     {
+                        $ALPHA_RES .= "<td>🔴</td>";
+                        $ALPHA_RES .= "<td> - </td><td> - </td></tr>";
                         // $ALPHA_RES .=  "<tr><td>Tabla 1 sasd asd asd</td><td>🟢</td><td>🟢</td><td>45</td></tr>";
                     }
 
-             $ALPHA_RES .= "</tr>";
+
+
+
+
+              $ALPHA_RES .= "</tr>";
             }
 
             echo $ALPHA_RES;
@@ -178,12 +190,138 @@
         function searchTableOnDB($BD, $TABLE)
         {
             $COL_NAME = "`Tables_in_".$BD."`"; //Acomodo todo puerilmente para que se entienda mas
-            $stable = "SHOW TABLES FROM estimates WHERE ".$COL_NAME ."= '".$TABLE."'";
+            $stable = "SHOW TABLES FROM `".$BD."` WHERE ".$COL_NAME ."= '".$TABLE."'";
 
             $REX = $this->CONN->consultaME($stable); //Pude haber hecho un 'One Liner' pero quedaria inentendible
 
           return count($REX);
         }
+
+
+
+        /** 
+         *   @brief Metodo para comparar la cantidad de elementos para saber si hay nuevas rows
+         *     
+         *   @param BDA		Nombre de la primera base de datos (string)
+         *   @param BDB		Nombre de la segunda base de datos (string)
+         *   @param TABLE		Nombre de la tabla comun (string)
+         * 
+         *   @return RES   Cantidad de elementos diferentes (int)
+         */
+        function compareRows($BDA, $BDB, $TABLE)
+        {
+
+            $T1X ="SELECT count(*) AS CC FROM `".$BDA."`.`".$TABLE."`";
+            $T2X ="SELECT count(*) AS CC FROM `".$BDB."`.`".$TABLE."`";
+
+            $R1 = $this->CONN->consultaME($T1X); //Pude haber hecho un 'One Liner' pero quedaria inentendible
+            $R2 = $this->CONN->consultaME($T2X);
+
+
+            $RES = $R1[0]["CC"] - $R2[0]["CC"];
+            $RES = ($RES<0)? $RES *-1 : $RES; //Siempre positivos
+
+          return $RES;
+        }
+
+
+        /** 
+         *   @brief Metodo para comprobar cambios en los elementos de la tabla 
+         *     
+         *   @param BDA		Nombre de la primera base de datos (string)
+         *   @param BDB		Nombre de la segunda base de datos (string)
+         *   @param TABLE		Nombre de la tabla comun (string)
+         * 
+         *   @return REX   Resultados de elementos (array)
+         */
+        function hasChanges_OLD($BDA, $BDB, $TABLE)
+        {
+
+            $T1X ="DESCRIBE `".$BDA."`.`".$TABLE."`";
+            $T2X ="DESCRIBE `".$BDB."`.`".$TABLE."`";
+
+            $TR1 = $this->CONN->consultaME($T1X);
+            $TR2 = $this->CONN->consultaME($T2X);
+
+            //Pre armamos los counts ...
+            $XTR1 = count($TR1);
+            $XTR2 = count($TR2);
+
+                $REX["flag"] = 0;
+                $LIST = [];
+
+
+                //El "Problema" de este es que solamente es de un lado y quiero ver de los dos                         
+                foreach($TR1 as $tr1){                                                            
+                    foreach($TR2 as $j => $tr2){ //We Seearch
+
+                        if($tr1["Field"] !== $tr2["Field"])
+                        {
+                            if($j == $XTR2-1 )//Si recorrimos todo
+                            {                         
+                                $REX["flag"] = 1; //Me vale pito, con uno ya falseo
+                                $stmp = ($XTR2 <= $XTR1)?$tr1["Field"]:$tr2["Field"];//Vamos haciendo una estupidez xd
+                                array_push($LIST,  $stmp); //$tr1["Field"]);
+                            }
+                        }
+                        else
+                            break;                        
+                    }
+                }
+
+                
+                $REX["LL"] = $LIST;
+
+           return $REX;
+        }
+
+        function hasChanges($BDA, $BDB, $TABLE)
+        {
+
+            $T1X ="DESCRIBE `".$BDA."`.`".$TABLE."`";
+            $T2X ="DESCRIBE `".$BDB."`.`".$TABLE."`";
+
+            $TR1 = $this->CONN->consultaME($T1X);
+            $TR2 = $this->CONN->consultaME($T2X);
+
+            //Pre armamos los counts ...
+            $XTR1 = count($TR1);
+            $XTR2 = count($TR2);
+
+                $REX["flag"] = 0;
+                $LIST = [];
+
+
+                //El "Problema" de este es que solamente es de un lado y quiero ver de los dos                         
+                foreach($TR1 as $tr1){                                                            
+                    foreach($TR2 as $j => $tr2){ //We Seearch
+
+                        if($tr1["Field"] !== $tr2["Field"])
+                        {
+                            if($j == $XTR2-1 )//Si recorrimos todo
+                            {                         
+                                $REX["flag"] = 1; //Me vale pito, con uno ya falseo
+                                $stmp = ($XTR2 <= $XTR1)?$tr1["Field"]:$tr2["Field"];//Vamos haciendo una estupidez xd
+                                array_push($LIST,  $stmp); //$tr1["Field"]);
+                            }
+                        }
+                        else
+                            break;                        
+                    }
+                }
+
+                
+                $REX["LL"] = $LIST;
+
+           return $REX;
+        }        
+
+
+
+        function arrayFusion(){
+
+        }
+
 
 
  }//FINdeCLASS

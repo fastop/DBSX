@@ -26,7 +26,8 @@
                 echo $DBS->getTableListFrom($_POST["dbs"]);
                 break;
               }
-      case 2: {
+      case 2: {//Hacemos la comparativa de las bases de datos ...
+                echo $DBS->compareTables($_POST["DBA"], $_POST["DBB"]);
                 break;
               } 
 }

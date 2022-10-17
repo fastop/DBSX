@@ -56,7 +56,8 @@ require "proc/DBSX.class.php"; //Clase con los metodos de cargado
       #tblCompareX { border: solid thin lightgrey; }
 
       #tblCompareX td, th  { text-align: center;}
-      
+      #tblCompareX th  { cursor: pointer;}
+
       #tblCompareX td:nth-child(1), th:nth-child(1){ text-align: left;}
 
     </style>
@@ -138,7 +139,13 @@ require "proc/DBSX.class.php"; //Clase con los metodos de cargado
                                     <tr>
                                         <th scope="col" class="w-80">#</th>
                                         <th scope="col" class="w-10">Exists</th>
-                                        <th scope="col" class="w-10">Has Changes</th>        
+                                        <th scope="col" class="w-10">
+                                            <span class="d-inline-block" tabindex="0" 
+                                                    data-bs-toggle="tooltip" title="Check the changes on fields (types, names, etc.).">
+                                                    Has Changes 
+                                            </span>
+      
+                                        </th>        
                                         <th scope="col" class="w-10">New Rows</th>                                    
                                     </tr>
                                   </thead>
@@ -199,7 +206,7 @@ require "proc/DBSX.class.php"; //Clase con los metodos de cargado
             //----------------------------
 
             $("#btnCompareDatabases").click(function() {
-                console.log(" Click That Button!!! ");
+                compareDatabases();
             });
             
 
@@ -233,8 +240,40 @@ require "proc/DBSX.class.php"; //Clase con los metodos de cargado
         }
 
 
+        function compareDatabases()
+        {
+            let DBA = $("#cmbFirstDatabaseCC").val();
+            let DBB = $("#cmbSecondDatabaseCC").val();
 
-        
+
+            console.log(DBA);
+            console.log(DBB);
+
+         if(DBA.length>0 && DBB.length >0)
+         {
+                $.ajax({
+                    url: "proc/DBSX.ajax.php",
+                    type: "POST",
+                    data: { opc: 2, DBA:DBA, DBB:DBB},
+                    // dataType: 'json',
+                    success: function (RES) {
+
+                            $("#tblComparesBody").html(RES);
+
+                        console.log(RES);
+                    },
+                    error: function (jqXHR, status, error) {
+                    console.log("ERROR: algo fallo por ahi... ");
+                    console.log(jqXHR);
+                    },
+                });
+         }
+         else
+         {
+            console.log("Please Select Databases!");
+         }
+
+     }
     </script>
 
 </body>

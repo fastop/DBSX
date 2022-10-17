@@ -46,15 +46,25 @@
 
 
 
-       $SS = $DBS->searchTableOnDB("estimates", "colorssss");
+       //$SS = $DBS->searchTableOnDB("estimates", "colorssss");
+//
+       //if($SS)
+       // echo "EXISTE wiwiw";
+       //else
+       // echo "NO EXISTE, BUUUU";
+//
+//
+       // $DBS->compareTables("estimates","estimates_clean");
 
-       if($SS)
-        echo "EXISTE wiwiw";
-       else
-        echo "NO EXISTE, BUUUU";
 
 
-        $DBS->compareTables("estimates","estimates_clean");
+       // echo $DBS->compareRows("estimates","estimates_server_server-a","brands");
+
+
+
+    //  print_r( $DBS-> hasChanges("estimates_server_server-a","estimates","trims"));
+
+      print_r( $DBS-> hasChanges("estimates","estimates_server_server-a","trims"));
 
 
 
