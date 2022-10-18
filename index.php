@@ -62,9 +62,16 @@ require "proc/DBSX.class.php"; //Clase con los metodos de cargado
 
       #tblCompareX {display: none;}
 
+      #loadr {top: 50%; display: none; position: absolute;}
+
     </style>
 </head>
 <body class="bg-light">
+
+ <div class='text-center w-100' id="loadr"><div class='spinner-border text-primary' role='status'>
+        <span class='visually-hidden'>Loading...</span></div>
+ </div>
+
     <div class="py-3 text-center">          
           <h2>BDSMX</h2>
           <p class="lead">Comparativa de BD's.</p>
@@ -161,7 +168,7 @@ require "proc/DBSX.class.php"; //Clase con los metodos de cargado
                                     
                                   </tbody>
                                 </table>
-                                <div style="text-align: center"> :) </div>                                
+                                <div class="text-center "> :) </div>                                
                             </div>
 
                 </div>
@@ -257,13 +264,12 @@ require "proc/DBSX.class.php"; //Clase con los metodos de cargado
             console.log(DBB);
             
         
-            spin = "<div class='text-center'><div class='spinner-border text-primary' role='status'>";
-            spin += "<span class='visually-hidden'>Loading...</span></div></div>";
-
+            
             $("#tblCompareX").show();//Mostramos lo oculto (de la primera vez)
-            $("#tblComparesBody").html(spin);
+            $("#loadr").show();
+            $("#tblComparesBody").html("");
 
-
+ 
          if(DBA.length>0 && DBB.length >0)
          {
                 $.ajax({
@@ -272,7 +278,8 @@ require "proc/DBSX.class.php"; //Clase con los metodos de cargado
                     data: { opc: 2, DBA:DBA, DBB:DBB},
                     // dataType: 'json',
                     success: function (RES) {
-
+                        
+                            $("#loadr").hide();
                             $("#tblComparesBody").html(RES);
 
                         console.log(RES);
@@ -287,7 +294,7 @@ require "proc/DBSX.class.php"; //Clase con los metodos de cargado
          {
             console.log("Please Select Databases!");
          }
-
+ 
      }
     </script>
 

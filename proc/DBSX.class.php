@@ -167,7 +167,7 @@
                                 $box = "<span class='btn btn-light' type='button' data-bs-toggle='collapse' data-bs-target='#col".$T1X."' 
                                         aria-expanded='false' aria-controls='col".$T1X."'> 🔴</span>
                                          <div><div class='collapse collapse-horizontal' id='col".$T1X."'>
-                                         <div class='card card-body' style='width: 300px;'>
+                                         <div class='card card-body' style='width: 100%;'>
                                          ".$fields."
                                          </div></div></div>";
 
