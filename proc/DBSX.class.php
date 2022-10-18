@@ -148,15 +148,40 @@
 
                     if($this->searchTableOnDB($BETA, $T1X))
                     { //SI existe... Revisamos el dato ... 
-                                                
+                        $ALPHA_RES .= "<td>🟢</td>";            
 
+                        $RT = $this->hasChanges($ALPHA, $BETA, $T1X);
 
-                        $ALPHA_RES .= "<td>🟢</td>";
+                     //   echo $T1X."<br>";
+                     //   print_r($RT);
+
+                        if($RT["flag"]){
+
+                            $fields ="";
+
+                                foreach($RT["LL"] as $key => $field){
+                                     $side = explode("_",$key);
+                                    $fields .= "[".$side[0]."] ".$field."<br/>";
+                                }
+
+                                $box = "<span class='btn btn-light' type='button' data-bs-toggle='collapse' data-bs-target='#col".$T1X."' 
+                                        aria-expanded='false' aria-controls='col".$T1X."'> 🔴</span>
+                                         <div><div class='collapse collapse-horizontal' id='col".$T1X."'>
+                                         <div class='card card-body' style='width: 300px;'>
+                                         ".$fields."
+                                         </div></div></div>";
+
+                             $ALPHA_RES .= "<td>".$box."</td>";
+
+                        }                            
+                        else
+                        $ALPHA_RES .= "<td>🟢</td>"; 
+                             
 
 
                         //Comparemos la cantidad de elementos per row
                         $CC = $this->compareRows($ALPHA, $BETA, $T1X); 
-                        $ALPHA_RES .= "<td>🟢</td><td>".$CC."</td></tr>";
+                        $ALPHA_RES .= " <td>".$CC."</td></tr>";
 
                     }
                     else //SI no existe
@@ -165,9 +190,7 @@
                         $ALPHA_RES .= "<td> - </td><td> - </td></tr>";
                         // $ALPHA_RES .=  "<tr><td>Tabla 1 sasd asd asd</td><td>🟢</td><td>🟢</td><td>45</td></tr>";
                     }
-
-
-
+ 
 
 
               $ALPHA_RES .= "</tr>";
@@ -277,7 +300,6 @@
 
         function hasChanges($BDA, $BDB, $TABLE)
         {
-
             $T1X ="DESCRIBE `".$BDA."`.`".$TABLE."`";
             $T2X ="DESCRIBE `".$BDB."`.`".$TABLE."`";
 
@@ -286,42 +308,79 @@
 
             //Pre armamos los counts ...
             $XTR1 = count($TR1);
-            $XTR2 = count($TR2);
+            $XTR2 = count($TR2); 
 
-                $REX["flag"] = 0;
-                $LIST = [];
+ 
+                // fusionamos los arreglos
+                  $FUSION = $this->arrayFusion($TR1, $TR2);
 
+                  $REX["flag"] = (count($FUSION)>0)?1:0;
+                  $REX["LL"] = $FUSION;
+             
+                // $ALPHA_RES ="";
 
-                //El "Problema" de este es que solamente es de un lado y quiero ver de los dos                         
-                foreach($TR1 as $tr1){                                                            
-                    foreach($TR2 as $j => $tr2){ //We Seearch
+                // foreach($TR1 as $str1){                
+                //         if(array_search($TR1[0]["Field"],  $REX["LL"]))
+                //         {                            
+                //            $box = "<span class='btn btn-primary' type='button' data-bs-toggle='collapse' data-bs-target='#col".$TR1[0]["Field"]."' 
+                //                    aria-expanded='false' aria-controls='col".$TR1[0]["Field"]."'> 🔴</span>
+                //                     <div><div class='collapse collapse-horizontal' id='col".$TR1[0]["Field"]."'>
+                //                     <div class='card card-body' style='width: 300px;'>
+                //                         ASSDASDASD
+                //                     </div></div></div>";
 
-                        if($tr1["Field"] !== $tr2["Field"])
-                        {
-                            if($j == $XTR2-1 )//Si recorrimos todo
-                            {                         
-                                $REX["flag"] = 1; //Me vale pito, con uno ya falseo
-                                $stmp = ($XTR2 <= $XTR1)?$tr1["Field"]:$tr2["Field"];//Vamos haciendo una estupidez xd
-                                array_push($LIST,  $stmp); //$tr1["Field"]);
-                            }
-                        }
-                        else
-                            break;                        
-                    }
-                }
-
-                
-                $REX["LL"] = $LIST;
+                //             $ALPHA_RES .= "<td>".$box."</td>";                         
+                //         }
+                //         else
+                //             $ALPHA_RES .= "<td>🟢</td>"; 
+                // }
+                 
 
            return $REX;
         }        
+ 
+        function arrayFusion($AX1, $AX2)
+        {             
+            foreach($AX1 as $i=>$ax1){
+                $BIG_ARRAY_A["1_".$i] = $ax1["Field"];
+            }
 
+            foreach($AX2 as $i=>$ax2){
+                $BIG_ARRAY_B["2_".$i] = $ax2["Field"];
+            } 
+ 
+ 
+            $resultA=array_diff($BIG_ARRAY_A, $BIG_ARRAY_B); 
+            $resultB=array_diff($BIG_ARRAY_B, $BIG_ARRAY_A);
 
+            $REX = array_merge($resultA,$resultB);
 
-        function arrayFusion(){
-
+          return $REX;        
         }
+ 
 
+        /** 
+         *   @brief version sencilla de hasChanges
+         *     
+         *   @param BDA		Nombre de la primera base de datos (string)
+         *   @param BDB		Nombre de la segunda base de datos (string)
+         *   @param TABLE		Nombre de la tabla comun (string)
+         * 
+         *   @return RES   Cantidad de elementos diferentes (int)
+         */
+        function hasChangesMini($BDA, $BDB, $TABLE){
+
+                // 1.- Obtenemos la lista de elementos de la tabla A
+                // 2.- SI existe... ya chingamos GREEN, Si no... RED 
+                // 3.- 
+
+                //Buscamos la tabla 
+                $T1X ="SHOW COLUMNS FROM `".$BDA."`.`".$TABLE."` LIKE '".$TABLE."'";
+
+                echo $T1X;
+
+ 
+        }
 
 
  }//FINdeCLASS

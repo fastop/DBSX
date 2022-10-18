@@ -58,7 +58,9 @@ require "proc/DBSX.class.php"; //Clase con los metodos de cargado
       #tblCompareX td, th  { text-align: center;}
       #tblCompareX th  { cursor: pointer;}
 
-      #tblCompareX td:nth-child(1), th:nth-child(1){ text-align: left;}
+      #tblCompareX td:nth-child(1), th:nth-child(1){ text-align: left; }
+
+      #tblCompareX {display: none;}
 
     </style>
 </head>
@@ -134,11 +136,17 @@ require "proc/DBSX.class.php"; //Clase con los metodos de cargado
                             </div>
 
                             <div class="pt-4">
+
                                 <table id="tblCompareX" class="table table-hover w-100">
                                   <thead>
                                     <tr>
                                         <th scope="col" class="w-80">#</th>
-                                        <th scope="col" class="w-10">Exists</th>
+                                        <th scope="col" class="w-10">
+                                            <span class="d-inline-block" tabindex="0" 
+                                                    data-bs-toggle="tooltip" title="Check the TABLES.">
+                                                    Exists
+                                            </span>
+                                        </th>
                                         <th scope="col" class="w-10">
                                             <span class="d-inline-block" tabindex="0" 
                                                     data-bs-toggle="tooltip" title="Check the changes on fields (types, names, etc.).">
@@ -150,11 +158,10 @@ require "proc/DBSX.class.php"; //Clase con los metodos de cargado
                                     </tr>
                                   </thead>
                                   <tbody id="tblComparesBody">
-                                        <tr><td>Tabla 1 sasd asd asd</td><td>🟢</td><td>🟢</td><td>45</td></tr>
-                                        <tr><td>1</td><td>🟢</td><td>🔴</td></tr>
-                                        <tr><td>1</td><td>🔴</td><td>🔴</td></tr>
+                                    
                                   </tbody>
                                 </table>
+                                <div style="text-align: center"> :) </div>                                
                             </div>
 
                 </div>
@@ -248,6 +255,14 @@ require "proc/DBSX.class.php"; //Clase con los metodos de cargado
 
             console.log(DBA);
             console.log(DBB);
+            
+        
+            spin = "<div class='text-center'><div class='spinner-border text-primary' role='status'>";
+            spin += "<span class='visually-hidden'>Loading...</span></div></div>";
+
+            $("#tblCompareX").show();//Mostramos lo oculto (de la primera vez)
+            $("#tblComparesBody").html(spin);
+
 
          if(DBA.length>0 && DBB.length >0)
          {

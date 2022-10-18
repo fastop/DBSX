@@ -54,17 +54,25 @@
        // echo "NO EXISTE, BUUUU";
 //
 //
-       // $DBS->compareTables("estimates","estimates_clean");
+        $DBS->compareTables("estimates","estimates_server_server-a");
 
 
 
-       // echo $DBS->compareRows("estimates","estimates_server_server-a","brands");
+    // echo $DBS->compareRows("estimates","estimates_server_server-a","brands");
+
+ //     print_r( $DBS-> hasChanges("estimates_server_server-a","estimates","trims"));
+
+    // print_r( $DBS->hasChanges("estimates","estimates_server_server-a","trims"));
+ 
+
+  //  print_r( $DBS->hasChangesMini("estimates","estimates_server_server-a","trim"));
+    
 
 
 
-    //  print_r( $DBS-> hasChanges("estimates_server_server-a","estimates","trims"));
 
-      print_r( $DBS-> hasChanges("estimates","estimates_server_server-a","trims"));
+
+
 
 
 
