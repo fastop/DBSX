@@ -7,7 +7,7 @@
  *  @author DRV                       			 
  *  @date Octubre 2022
  *            								  		 
- *  @version 1.0           			
+ *  @version 1.2          			
  ****************************************************** */ 
 
 
@@ -59,6 +59,34 @@
 
           return $LST;
         }
+
+
+
+
+
+        /** 
+         *   @brief Metodo para obtener el componente de lista
+         *     
+         *   @param db	Nombre de la base de datos (string)
+         *   @return LST   Lista con los elementos (string/html)
+         */
+        function getTableCombo($db, $table)
+        {
+
+            $RES = $this->getTablesFrom($db);
+             
+            $LST = "<datalist id='data_".$db."'>";
+             
+             foreach($RES as $res){
+                 $LST .= "<option value='".$res["Tables_in_".$db]."'></option>";
+             }
+           
+             $LST .= "</datalist>";
+             $LST .= "<input type='text' class='form-select DATA_TABLE' placeholder='Select Table' data-parent='".$db."'' name='table_".$db."' id='table_".$db."' list='data_".$db."'>";
+
+          return $LST;
+        }
+
 
 
 
@@ -181,14 +209,38 @@
 
                         //Comparemos la cantidad de elementos per row
                         $CC = $this->compareRows($ALPHA, $BETA, $T1X); 
-                        $ALPHA_RES .= " <td>".$CC."</td></tr>";
+
+                        
+                        if($CC["DIF"]>0){
+
+                                $classA = ($CC["A1"] > $CC["B1"])?"text-danger":"";
+                                $classB = ($CC["A1"] < $CC["B1"])?"text-danger":"";
+                       
+                            $box = "<span class='btn btn-light' type='button' data-bs-toggle='collapse' data-bs-target='#col".$T1X."' 
+                                    aria-expanded='false' aria-controls='col".$T1X."'> ".$CC["DIF"]." </span>
+                                    <div><div class='collapse collapse-horizontal' id='col".$T1X."'>
+                                    <div class='card card-body w-100'>
+                                    <b class='".$classA."'>Table 1 </b> ".$CC["A1"]."<br/>
+                                    <b class='".$classB."'>Table 2 </b> ".$CC["B1"]."
+                                    </div></div></div>";
+                        }
+                        else
+                            $box = $CC["DIF"];
+
+
+                        // $ALPHA_RES .= " <td><span class='d-inline-block pointer' tabindex='0' data-bs-toggle='tooltip' title=' T1: ".$CC["A1"]." - ".$CC["B1"]." : T2'> ".$CC["DIF"]."</span></td></tr>";
+                        $ALPHA_RES .= " <td> ".$box."</td></tr>";
+
+
+
+
 
                     }
                     else //SI no existe
                     {
                         $ALPHA_RES .= "<td>🔴</td>";
                         $ALPHA_RES .= "<td> - </td><td> - </td></tr>";
-                        // $ALPHA_RES .=  "<tr><td>Tabla 1 sasd asd asd</td><td>🟢</td><td>🟢</td><td>45</td></tr>";
+                        // $ALPHA_RES .=  "<tr><td >Tabla 1 sasd asd asd</td><td>🟢</td><td>🟢</td><td>45</td></tr>";
                     }
  
 
@@ -229,7 +281,7 @@
          *   @param BDB		Nombre de la segunda base de datos (string)
          *   @param TABLE		Nombre de la tabla comun (string)
          * 
-         *   @return RES   Cantidad de elementos diferentes (int)
+         *   @return RESS   Cantidad de elementos diferentes, cantidad del primero y del segundo (Array)
          */
         function compareRows($BDA, $BDB, $TABLE)
         {
@@ -242,9 +294,11 @@
 
 
             $RES = $R1[0]["CC"] - $R2[0]["CC"];
-            $RES = ($RES<0)? $RES *-1 : $RES; //Siempre positivos
+            $RESS["DIF"] = ($RES<0)? $RES *-1 : $RES; //Siempre positivos
+            $RESS["A1"] = $R1[0]["CC"];
+            $RESS["B1"] = $R2[0]["CC"];
 
-          return $RES;
+          return $RESS;
         }
 
 

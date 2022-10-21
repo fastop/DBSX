@@ -30,6 +30,10 @@
                 echo $DBS->compareTables($_POST["DBA"], $_POST["DBB"]);
                 break;
               } 
+      case 3: {
+               echo $DBS->getTableCombo($_POST["dbx"], $_POST["elemetx"]);
+               break;
+              }               
 }
     
 

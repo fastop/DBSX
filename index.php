@@ -64,6 +64,8 @@ require "proc/DBSX.class.php"; //Clase con los metodos de cargado
 
       #loadr {top: 50%; display: none; position: absolute;}
 
+      .pointer { cursor: pointer;}
+
     </style>
 </head>
 <body class="bg-light">
@@ -85,7 +87,7 @@ require "proc/DBSX.class.php"; //Clase con los metodos de cargado
                 <div class="nav nav-tabs" id="nav-tab" role="tablist">
                     <button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true">Count</button>
                     <button class="nav-link" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="false">Table Compare</button>
-                    <button class="nav-link" id="nav-contact-tab" data-bs-toggle="tab" data-bs-target="#nav-contact" type="button" role="tab" aria-controls="nav-contact" aria-selected="false">Contact</button>
+                    <button class="nav-link" id="nav-contact-tab" data-bs-toggle="tab" data-bs-target="#nav-contact" type="button" role="tab" aria-controls="nav-contact" aria-selected="false">Compare Data in Tables</button>
                 </div>
             </nav>
             <div class="tab-content" id="nav-tabContent">
@@ -97,9 +99,8 @@ require "proc/DBSX.class.php"; //Clase con los metodos de cargado
                                     <!-- PRIMER ELEMENTO-->
                                 <div class="col"> 
                                     <h4 class="mb-3"> MAIN DB</h4> 
-                                    <div>  <?=$DBS->getDatabaseCombo("cmbFirstDatabase");?> </div>    
-
-                                    <ul class="list-group mb-3" id="firstTable">
+                                    <div>  <?=$DBS->getDatabaseCombo("cmbFirstDatabase");?> </div>
+                                    <ul class="list-group mb-3" id="firstTableComboCompare">
                                     </ul>
                                 </div> 
                                 <!-- SEGUNDO ELEMENTO-->
@@ -119,62 +120,88 @@ require "proc/DBSX.class.php"; //Clase con los metodos de cargado
                 <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
  
                              <div class="container">
-                                <div class="row">
-                                    <!-- PRIMER ELEMENTO-->
-                                <div class="col"> 
-                                    <h4 class="mb-3"> MAIN DB</h4> 
-                                    <div>  <?=$DBS->getDatabaseCombo("cmbFirstDatabaseCC");?> </div>    
+                                    <div class="row">
+                                        <!-- PRIMER ELEMENTO-->
+                                        <div class="col"> 
+                                            <h4 class="mb-3"> MAIN DB</h4> 
+                                            <div>  <?=$DBS->getDatabaseCombo("cmbFirstDatabaseCC");?> </div>    
 
-                                    <ul class="list-group mb-3" id="firstTable">
-                                    </ul>
-                                </div> 
-                                <!-- SEGUNDO ELEMENTO-->
-                                <div class="col"> 
-                                    <h4 class="mb-3"> Compare DB   </h4> 
-                                    <div>  <?=$DBS->getDatabaseCombo("cmbSecondDatabaseCC");?></div>    
+                                            <ul class="list-group mb-3" id="firstTable">
+                                            </ul>
+                                        </div> 
+                                        <!-- SEGUNDO ELEMENTO-->
+                                        <div class="col"> 
+                                            <h4 class="mb-3"> Compare DB   </h4> 
+                                            <div>  <?=$DBS->getDatabaseCombo("cmbSecondDatabaseCC");?></div>    
 
-                                    <ul class="list-group mb-3" id="secondTable">
-                                    </ul>
+                                            <ul class="list-group mb-3" id="secondTable">
+                                            </ul>
 
-                                </div>
-                                <div class="col-sm3"> 
-                                     <button id="btnCompareDatabases" class="w-100 btn btn-primary btn-lg"> Compare >> </button>
-                                </div>
-                            </div>
+                                        </div>
+                                        <div class="col-sm3"> 
+                                            <button id="btnCompareDatabases" class="w-100 btn btn-primary btn-lg"> Compare >> </button>
+                                        </div>  
+                                    </div>
 
-                            <div class="pt-4">
+                                    <div class="pt-4">
 
-                                <table id="tblCompareX" class="table table-hover w-100">
-                                  <thead>
-                                    <tr>
-                                        <th scope="col" class="w-80">#</th>
-                                        <th scope="col" class="w-10">
-                                            <span class="d-inline-block" tabindex="0" 
-                                                    data-bs-toggle="tooltip" title="Check the TABLES.">
-                                                    Exists
-                                            </span>
-                                        </th>
-                                        <th scope="col" class="w-10">
-                                            <span class="d-inline-block" tabindex="0" 
-                                                    data-bs-toggle="tooltip" title="Check the changes on fields (types, names, etc.).">
-                                                    Has Changes 
-                                            </span>
-      
-                                        </th>        
-                                        <th scope="col" class="w-10">New Rows</th>                                    
-                                    </tr>
-                                  </thead>
-                                  <tbody id="tblComparesBody">
-                                    
-                                  </tbody>
-                                </table>
-                                <div class="text-center "> :) </div>                                
+                                        <table id="tblCompareX" class="table table-hover w-100">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col" class="w-80">#</th>
+                                                <th scope="col" class="w-10">
+                                                    <span class="d-inline-block" tabindex="0" 
+                                                            data-bs-toggle="tooltip" title="Check the TABLES.">
+                                                            Exists
+                                                    </span>
+                                                </th>
+                                                <th scope="col" class="w-10">
+                                                    <span class="d-inline-block" tabindex="0" 
+                                                            data-bs-toggle="tooltip" title="Check the changes on fields (types, names, etc.).">
+                                                            Has Changes 
+                                                    </span>
+            
+                                                </th>        
+                                                <th scope="col" class="w-10">New Rows</th>                                    
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tblComparesBody">
+                                            
+                                        </tbody>
+                                        </table>
+                                    <div class="text-center "> :) </div>                                
                             </div>
 
                 </div>
+                </div>
                  <!-- THIRD TAB -->
                 <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">
-                    aS asad asd qw
+
+                     <div class="container">
+                            <div class="row">
+                                    <!-- PRIMER ELEMENTO-->
+                                <div class="col"> 
+                                    <h4 class="mb-3"> MAIN DB</h4> 
+                                    <div>  <?=$DBS->getDatabaseCombo("cmbFirstDatabaseDATA");?> </div>
+                                        <div class="list-group mb-3" id="firstTableDATA"></div>
+                                </div> 
+                                <!-- SEGUNDO ELEMENTO-->
+                                <div class="col"> 
+                                    <h4 class="mb-3"> Compare DB  </h4> 
+                                    <div>  <?=$DBS->getDatabaseCombo("cmbSecondDatabaseDATA");?></div>    
+
+                                    <ul class="list-group mb-3" id="secondTableDATA">
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <button id="btnCompareTables" class="w-100 btn btn-primary btn-lg"> Compare Data in Tables &gt;&gt; </button>
+                                </div>
+                            </div>
+                        </div>
+
+
                 </div>
             </div>
 
@@ -204,7 +231,7 @@ require "proc/DBSX.class.php"; //Clase con los metodos de cargado
         $(function(){
          
             $('#cmbFirstDatabase').on('change', function() {
-                loadTableList($(this).val(),"firstTable");
+                loadTableList($(this).val(),"firstTableComboCompare");
             });
 
 
@@ -216,13 +243,52 @@ require "proc/DBSX.class.php"; //Clase con los metodos de cargado
                 chSelection($(this))
             });
 
-
             //----------------------------
 
             $("#btnCompareDatabases").click(function() {
                 compareDatabases();
             });
+
+            //----------------------------                       
+
+            $('#cmbFirstDatabaseDATA').on('change', function() {
+                loadTablesInSelect($(this).val(), $(this).attr('id'),"firstTableDATA");
+            });
+
+
+            $('#cmbSecondDatabaseDATA').on('change', function() {                 
+                loadTablesInSelect($(this).val(), $(this).attr('id'),"secondTableDATA");
+            });            
             
+
+            //Combo de tablas        
+            $(document).on("click", ".DATA_TABLE", function () {
+                
+                console.log(">>>>");
+                console.log($(this).val());
+                console.log($(this).data());
+                
+            });
+
+
+            $("#btnCompareTables").click(function() {
+                console.log(" Click That Button!!! ");
+
+                DT1 = $("#cmbFirstDatabaseDATA").val();
+                DT2 = $("#cmbSecondDatabaseDATA").val();
+                console.log(DT1);
+                console.log(DT2);
+
+                TT1 = $("#table_"+DT1).val();
+                TT2 = $("#table_"+DT2).val();
+                
+                console.log(DT1+"."+TT1);
+                console.log(DT2+"."+TT2);
+
+
+            });
+            
+
 
         });
 
@@ -270,32 +336,89 @@ require "proc/DBSX.class.php"; //Clase con los metodos de cargado
             $("#tblComparesBody").html("");
 
  
-         if(DBA.length>0 && DBB.length >0)
-         {
-                $.ajax({
-                    url: "proc/DBSX.ajax.php",
-                    type: "POST",
-                    data: { opc: 2, DBA:DBA, DBB:DBB},
-                    // dataType: 'json',
-                    success: function (RES) {
-                        
-                            $("#loadr").hide();
-                            $("#tblComparesBody").html(RES);
+            if(DBA.length>0 && DBB.length >0)
+            {
+                    $.ajax({
+                        url: "proc/DBSX.ajax.php",
+                        type: "POST",
+                        data: { opc: 2, DBA:DBA, DBB:DBB},
+                        // dataType: 'json',
+                        success: function (RES) {
+                            
+                                $("#loadr").hide();
+                                $("#tblComparesBody").html(RES);
 
-                        console.log(RES);
-                    },
-                    error: function (jqXHR, status, error) {
-                    console.log("ERROR: algo fallo por ahi... ");
-                    console.log(jqXHR);
-                    },
-                });
-         }
-         else
-         {
-            console.log("Please Select Databases!");
-         }
+                            console.log(RES);
+                        },
+                        error: function (jqXHR, status, error) {
+                        console.log("ERROR: algo fallo por ahi... ");
+                        console.log(jqXHR);
+                        },
+                    });
+            }
+            else
+            {
+                console.log("Please Select Databases!");
+            }
  
-     }
+        }
+
+
+        /*
+           Function: loadTablesInSelect()
+           Funcion para mostrar las tablas en un select
+        
+           Parameters:
+              dbx - Nombre de la tabla tomado de la lista (string)
+              idx   - Identificador del elemento de select  (string)
+              container - Identificador del elemento donde se colocaran las listas  (string)              
+        */
+        function loadTablesInSelect(dbx, idx, container)
+        {
+            console.log(dbx);
+            console.log(idx);
+            console.log(container);
+
+            $("#"+container).html("Loading ...");
+
+                $.ajax({
+                     url: "proc/DBSX.ajax.php",
+                     type: "POST",
+                     data: { opc: 3, dbx: dbx, elemetx: idx},
+                     // dataType: 'json',
+                     success: function (RES) {
+                         console.log(RES);
+                        $("#"+container).html(RES); 
+
+                      //  console.log($("#table_"+dbx).data().parent);
+                      //  console.log($("#table_"+dbx).val());
+
+                     },
+                     error: function (jqXHR, status, error) {
+                     console.log("ERROR: algo fallo por ahi... ");
+                     console.log(jqXHR);
+                     },
+                });
+                
+        }
+
+
+        /*
+           Function: saveProfileData()
+           Funcion para guardar los datos modificados del perfil de usaurio.
+        
+           Parameters:
+              UDATA - Datos de usuario (TODOS)  (JSON)
+        
+           Returns:
+                Si se realizo de manera correcta retorna el ID del proyecto (generado aqui).
+                Si ocurrio algun error retorna 0.
+        
+        */
+
+
+
+
     </script>
 
 </body>
