@@ -203,7 +203,7 @@
 
                         }                            
                         else
-                        $ALPHA_RES .= "<td>🟢</td>"; 
+                            $ALPHA_RES .= "<td>🟢</td>"; 
                              
 
 
@@ -435,6 +435,113 @@
 
  
         }
+
+
+
+
+
+        /** 
+         *   @brief Metodo para comparar datos entre tablas
+         *     
+         *   @param db1		    Nombre de BD1 (string)
+         *   @param table1		Nombre de tabla 1 (string)
+         *   @param db2		    Nombre de BD2 (string)
+         *   @param table2		Nombre de table2 (string)
+         * 
+         *   @return 
+         *    Si existe    retorna true y el id del cliente     array(int, bool)
+         *    Si NO existe retorna false y como id, 0           array(int, bool)(bool)
+         */
+        function compareData($db1, $table1, $db2, $table2)
+        {
+            $STR1 = "`".$db1."`.`".$table1."`";
+            $STR2 = "`".$db2."`.`".$table2."`";
+ 
+
+            $sql = "SHOW COLUMNS FROM ".$STR1;            
+            $R2 = $this->CONN->consultaME($sql); 
+
+            $cols ="";
+            $xcols ="";
+            $ARR = [];
+
+            // ---------------------
+            //Armamos la consulta
+                foreach($R2 as $i => $rx)
+                {
+                    if($i>0){
+
+                        $cols .= $rx["Field"].",";
+                        $xcols .= $rx["Field"]."= :".$rx["Field"]." AND ";
+                  
+                        $ARR[$rx["Field"]] =""; //Inicializamos el array
+                    }
+
+                }
+
+                    $cols = rtrim($cols, ',');//Quitamos la ultima coma
+                    $xcols = rtrim($xcols, "AND ");////Quitamos el ultimo AND
+
+                $sql= "SELECT ".$cols." FROM ".$STR2." WHERE ".$xcols; //Consulta base (Como obtendremos lo del dos)
+            // ---------------------
+
+            //"INFLAMOS" y consultamos
+            $query = "SELECT ".$cols." FROM ".$STR1;
+            $WHOS = $this->CONN->consultaME($query);
+      
+            $XX = 0;
+            $TABLE_RES =  "<table>";
+ 
+                foreach($WHOS as $i=>$row){
+ 
+                    foreach($ARR as $i=>$arr){ //llenamos el array                     
+                        $ARR[$i] = $row[$i];
+                         
+                    } 
+
+                   //Y ahora consultamos la otra con estos datos
+                   $QQX = $this->CONN->consultaME_SEC($sql,$ARR);
+
+                 // print_r($QQX);
+
+                  if(count($QQX)<1){
+                    $XX++;
+                    $TABLE_RES.= "<tr><td> -> </td>";
+                
+                        foreach($row as $X => $rr){                
+                            
+                             $stmp = ($rr===array_values($row)[0])?"<h6 class='my-0'>".$rr."</h6>":$rr;
+
+                            $TABLE_RES.= "<td>".$stmp."</td>"; 
+                        }
+                     $TABLE_RES.= "</tr>"; 
+                  }
+                }
+ 
+
+            $TABLE_RES.=  "</table>";
+
+            $TABLE_RES.=  "<h1 class='bottomText'> Total: >> ".$XX." << </h1> ";
+
+            echo $TABLE_RES;
+
+
+        }
+
+
+
+
+       // "<li class='list-group-item d-flex justify-content-between lh-sm MELEMENT'>
+       //  <div> <h6 class='my-0'>brands</h6> <small class='text-muted'>Cantidad de elementos</small></div>
+       //  <span class='text-muted'>70</span> </li>";
+
+
+
+
+
+
+
+
 
 
  }//FINdeCLASS

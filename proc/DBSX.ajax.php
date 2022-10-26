@@ -33,7 +33,13 @@
       case 3: {
                echo $DBS->getTableCombo($_POST["dbx"], $_POST["elemetx"]);
                break;
-              }               
+              }
+      case 4: {
+               echo $DBS->compareData($_POST["db1"], $_POST["table1"], $_POST["db2"], $_POST["table2"]);
+               break;
+              }                   
+              
+
 }
     
 

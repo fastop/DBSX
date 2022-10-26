@@ -66,6 +66,23 @@ require "proc/DBSX.class.php"; //Clase con los metodos de cargado
 
       .pointer { cursor: pointer;}
 
+      #tblCompareData {
+            width: 100%;
+            margin-top: 1rem;
+      }
+
+      #tblCompareData tr {
+            border: solid thin lightgray;
+            width: 100%;
+      }
+
+      .bottomText {
+        width: 100%;
+        text-align: right;
+      }
+
+
+
     </style>
 </head>
 <body class="bg-light">
@@ -181,13 +198,13 @@ require "proc/DBSX.class.php"; //Clase con los metodos de cargado
                             <div class="row">
                                     <!-- PRIMER ELEMENTO-->
                                 <div class="col"> 
-                                    <h4 class="mb-3"> MAIN DB</h4> 
+                                    <h4 class="mb-3"> Bigger Table</h4> 
                                     <div>  <?=$DBS->getDatabaseCombo("cmbFirstDatabaseDATA");?> </div>
                                         <div class="list-group mb-3" id="firstTableDATA"></div>
                                 </div> 
                                 <!-- SEGUNDO ELEMENTO-->
                                 <div class="col"> 
-                                    <h4 class="mb-3"> Compare DB  </h4> 
+                                    <h4 class="mb-3"> Small Table  </h4> 
                                     <div>  <?=$DBS->getDatabaseCombo("cmbSecondDatabaseDATA");?></div>    
 
                                     <ul class="list-group mb-3" id="secondTableDATA">
@@ -198,6 +215,14 @@ require "proc/DBSX.class.php"; //Clase con los metodos de cargado
                                 <div class="col">
                                     <button id="btnCompareTables" class="w-100 btn btn-primary btn-lg"> Compare Data in Tables &gt;&gt; </button>
                                 </div>
+                            </div>
+                            <div id="row">                                
+                              <div class="col list-group mb-3" id="tblCompareData">
+                                    
+                              </div>
+                              
+                                  <!--   <ul class="list-group mb-3" id="firstTable">
+                                    </ul> -->
                             </div>
                         </div>
 
@@ -272,20 +297,7 @@ require "proc/DBSX.class.php"; //Clase con los metodos de cargado
 
 
             $("#btnCompareTables").click(function() {
-                console.log(" Click That Button!!! ");
-
-                DT1 = $("#cmbFirstDatabaseDATA").val();
-                DT2 = $("#cmbSecondDatabaseDATA").val();
-                console.log(DT1);
-                console.log(DT2);
-
-                TT1 = $("#table_"+DT1).val();
-                TT2 = $("#table_"+DT2).val();
-                
-                console.log(DT1+"."+TT1);
-                console.log(DT2+"."+TT2);
-
-
+                compareDataInTables();
             });
             
 
@@ -326,8 +338,8 @@ require "proc/DBSX.class.php"; //Clase con los metodos de cargado
             let DBB = $("#cmbSecondDatabaseCC").val();
 
 
-            console.log(DBA);
-            console.log(DBB);
+            // console.log(DBA);
+            // console.log(DBB);
             
         
             
@@ -387,7 +399,7 @@ require "proc/DBSX.class.php"; //Clase con los metodos de cargado
                      data: { opc: 3, dbx: dbx, elemetx: idx},
                      // dataType: 'json',
                      success: function (RES) {
-                         console.log(RES);
+                    //     console.log(RES);
                         $("#"+container).html(RES); 
 
                       //  console.log($("#table_"+dbx).data().parent);
@@ -403,18 +415,51 @@ require "proc/DBSX.class.php"; //Clase con los metodos de cargado
         }
 
 
-        /*
-           Function: saveProfileData()
-           Funcion para guardar los datos modificados del perfil de usaurio.
-        
-           Parameters:
-              UDATA - Datos de usuario (TODOS)  (JSON)
-        
-           Returns:
-                Si se realizo de manera correcta retorna el ID del proyecto (generado aqui).
-                Si ocurrio algun error retorna 0.
-        
-        */
+        function compareDataInTables()
+        {
+           // console.log(" Click That Button!!! ");
+
+                DT1 = $("#cmbFirstDatabaseDATA").val();
+                DT2 = $("#cmbSecondDatabaseDATA").val();
+               // console.log(DT1);
+               // console.log(DT2);
+
+                TT1 = $("#table_"+DT1).val();
+                TT2 = $("#table_"+DT2).val();
+
+               // console.log(DT1+"."+TT1);
+               // console.log(DT2+"."+TT2);
+
+
+               // $_POST["db1"], $_POST["table1"], $_POST["db2"], $_POST["table2"]
+
+               $("#loadr").show();
+               $("#tblCompareData").html("Loading ...");
+
+                $.ajax({
+                     url: "proc/DBSX.ajax.php",
+                     type: "POST",
+                     data: { opc: 4, db1:DT1, table1:TT1, db2:DT2, table2:TT2 },
+                     // dataType: 'json',
+                     success: function (RES) {
+                         // console.log(RES);
+                         $("#loadr").hide();
+                        $("#tblCompareData").html(RES); 
+
+                      //  console.log($("#table_"+dbx).data().parent);
+                      //  console.log($("#table_"+dbx).val());
+
+                     },
+                     error: function (jqXHR, status, error) {
+                        console.log("ERROR: algo fallo por ahi... ");
+                        console.log(jqXHR);
+                     },
+                });
+
+
+
+        }
+
 
 
 

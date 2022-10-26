@@ -54,7 +54,7 @@
        // echo "NO EXISTE, BUUUU";
 //
 //
-        $DBS->compareTables("estimates","estimates_server_server-a");
+//        $DBS->compareTables("estimates","estimates_server_server-a");
 
 
 
@@ -70,9 +70,11 @@
 
 
 
+     //  $DBS->compareData("estimates","brands","estimates_server","brands");  
+      // $DBS->compareData("estimates_server","colors","estimates","colors");
+        $DBS->compareData("estimates_server","labors","estimates","labors");
 
-
-
+     // $DBS->compareData("estimates","customers","estimates_server","customers");
 
 
 
